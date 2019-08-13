@@ -22,15 +22,6 @@ recognition.onresult = (event) => {
     responses();
 };
 
-// $( "#start" ).click(function() {
-
-// });
-//
-// $( "#stop" ).click(function() {
-//     recognition.stop();
-// });
-//
-
 $( "#btn-mic" ).click(function() {
     $("#active-mic").toggle();
     $("#inactive-mic").toggle();
@@ -51,47 +42,23 @@ function responses() {
         $("#app-content").append('<div class="row"><div class="col s12 right-align"><div class="card">'
             + finalTranscript + '</div></div></div>');
 
-        let res;
-
-        switch (finalTranscript.toLowerCase()) {
-            case "හලෝ":
-            case "හෙලෝ":
-            case "හායි":
-            case "හලෝ සිරිසේන":
-            case "හෙලෝ සිරිසේන":
-            case "හායි සිරිසේන":
-                res = hi();
+        $.ajax({
+            type: 'GET',
+            url: 'https://sinhalavoicerecognizer.000webhostapp.com/search.php?search='+ finalTranscript.toLowerCase(),
+            dataType: 'json',
+            success: function (data) {
+                responsiveVoice.speak(data.response,"Sinhala");
+                printResponse(data.response);
+            },
+            error: function() {
+                let res = "මේ සදහා කිසිදු ප්‍රතිචාරයක් නොමැත.කරුණාකර අලුත් ප්‍රතිචාරයක් ඇතුලත් කරන්න";
                 responsiveVoice.speak(res,"Sinhala");
                 printResponse(res);
-                break;
-            case "කොහොමද":
-            case "කොහොමද හලෝ":
-            case "ඔයාට කොහොමද":
-                res = howAreYou();
-                responsiveVoice.speak(res,"Sinhala");
-                printResponse(res);
-                break;
-            case "good morning":
-                res = morning();
-                responsiveVoice.speak(res);
-                printResponse(res);
-                break;
-            case "සුභ උදෑසනක්":
-                res = subaUdasanak();
-                responsiveVoice.speak(res,"Sinhala");
-                printResponse(res);
-                break;
-
-
-        }
-
+            }
+        });
     }
 }
 
-function hi() {
-    let greetings = ["හායි","හලෝ","හෙලෝ"];
-    return greetings[randomNumber(greetings.length)]
-}
 function howAreYou() {
     let greetings = ["හොඳින් ඉන්නවා","මම හොඳින් ඉන්නවා","ඔයාට මොකටද?","ඇයි අහන්නේ" ];
     return greetings[randomNumber(greetings.length)]
@@ -122,3 +89,7 @@ function printResponse(res) {
     $("#app-content").append('<div class="row"><div class="col s12"><div class="card">'
         + res + '</div></div></div>');
 }
+//db name
+// id10487164_speech_recognizer
+//user
+// id10487164_speech_recognizer
